@@ -1,6 +1,6 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Sarif To Security Standard Report'
+description: 'Compare a SARIF results file to a security standard CWE list and produce a report'
+author: 'GitHub, Inc'
 inputs:
   milliseconds: # change this
     required: true

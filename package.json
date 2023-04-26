@@ -1,8 +1,8 @@
 {
-  "name": "typescript-action",
-  "version": "0.0.0",
+  "name": "sarif-to-security-standard-report",
+  "version": "beta-0.0.1",
   "private": true,
-  "description": "TypeScript template action",
+  "description": "Compare a SARIF results file to a security standard CWE list and produce a report",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -15,12 +15,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/ctcampbell/sarif-to-security-standard-report.git"
   },
   "keywords": [
     "actions",
     "node",
-    "setup"
+    "sarif",
+    "github"
   ],
   "author": "",
   "license": "MIT",

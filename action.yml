@@ -2,10 +2,12 @@ name: 'Sarif To Security Standard Report'
 description: 'Compare a SARIF results file to a security standard CWE list and produce a report'
 author: 'GitHub, Inc'
 inputs:
-  milliseconds: # change this
+  sarifFile:
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    description: 'The SARIF file to compare'
+  cweFile:
+    required: true
+    description: 'The CWE file to compare'
 runs:
   using: 'node16'
   main: 'dist/index.js'

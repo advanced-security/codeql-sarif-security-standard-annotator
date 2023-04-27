@@ -1,24 +1,32 @@
 import yargs from 'yargs'
-import {hideBin} from 'yargs/helpers'
+import { hideBin } from 'yargs/helpers'
 import * as fs from 'fs'
 import * as core from '@actions/core'
-import {parseXml, XmlElement} from '@rgrove/parse-xml'
+import { parseXml, XmlElement } from '@rgrove/parse-xml'
+import { env } from 'process'
 
 function isXmlElement(xmlThing: any): xmlThing is XmlElement {
   return xmlThing instanceof XmlElement
 }
 
-// parse arguments
-const argv = yargs(hideBin(process.argv))
+// parse inputs or arguments from command line
+var sarifFile = core.getInput('sarifFile');
+var cweFile = core.getInput('cweFile');
+
+if (env.CI !== 'true') {
+  const argv = yargs(hideBin(process.argv))
   .options({
     sarifFile: {type: 'string', demandOption: true},
     cweFile: {type: 'string', demandOption: true}
   })
-  .parseSync()
+  .parseSync();
+  sarifFile = argv.sarifFile;
+  cweFile = argv.cweFile;
+}
 
 // load SARIF file
 try {
-  var sarifResults = JSON.parse(fs.readFileSync(argv.sarifFile, 'utf8'))
+  var sarifResults = JSON.parse(fs.readFileSync(sarifFile, 'utf8'))
 } catch (err) {
   core.setFailed(`Unable to load SARIF file: ${err}`)
   process.exit(1)
@@ -26,7 +34,7 @@ try {
 
 // load security standard CWE list
 try {
-  var cweList = parseXml(fs.readFileSync(argv.cweFile, 'utf8'))
+  var cweList = parseXml(fs.readFileSync(cweFile, 'utf8'))
 } catch (err) {
   core.setFailed(`Unable to load CWE list: ${err}`)
   process.exit(1)
@@ -66,7 +74,7 @@ sarifResults.runs.forEach((run: any) => {
 
 // Output report
 try {
-  fs.writeFileSync(argv.sarifFile, JSON.stringify(sarifResults))
+  fs.writeFileSync(sarifFile, JSON.stringify(sarifResults))
 } catch (err) {
   core.setFailed(`Unable to write SARIF file: ${err}`)
   process.exit(1)

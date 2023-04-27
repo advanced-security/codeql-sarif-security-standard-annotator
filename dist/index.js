@@ -38,19 +38,26 @@ const helpers_1 = __nccwpck_require__(6658);
 const fs = __importStar(__nccwpck_require__(7147));
 const core = __importStar(__nccwpck_require__(2186));
 const parse_xml_1 = __nccwpck_require__(8532);
+const process_1 = __nccwpck_require__(7282);
 function isXmlElement(xmlThing) {
     return xmlThing instanceof parse_xml_1.XmlElement;
 }
-// parse arguments
-const argv = (0, yargs_1.default)((0, helpers_1.hideBin)(process.argv))
-    .options({
-    sarifFile: { type: 'string', demandOption: true },
-    cweFile: { type: 'string', demandOption: true }
-})
-    .parseSync();
+// parse inputs or arguments from command line
+var sarifFile = core.getInput('sarifFile');
+var cweFile = core.getInput('cweFile');
+if (process_1.env.CI !== 'true') {
+    const argv = (0, yargs_1.default)((0, helpers_1.hideBin)(process.argv))
+        .options({
+        sarifFile: { type: 'string', demandOption: true },
+        cweFile: { type: 'string', demandOption: true }
+    })
+        .parseSync();
+    sarifFile = argv.sarifFile;
+    cweFile = argv.cweFile;
+}
 // load SARIF file
 try {
-    var sarifResults = JSON.parse(fs.readFileSync(argv.sarifFile, 'utf8'));
+    var sarifResults = JSON.parse(fs.readFileSync(sarifFile, 'utf8'));
 }
 catch (err) {
     core.setFailed(`Unable to load SARIF file: ${err}`);
@@ -58,7 +65,7 @@ catch (err) {
 }
 // load security standard CWE list
 try {
-    var cweList = (0, parse_xml_1.parseXml)(fs.readFileSync(argv.cweFile, 'utf8'));
+    var cweList = (0, parse_xml_1.parseXml)(fs.readFileSync(cweFile, 'utf8'));
 }
 catch (err) {
     core.setFailed(`Unable to load CWE list: ${err}`);
@@ -97,7 +104,7 @@ sarifResults.runs.forEach((run) => {
 });
 // Output report
 try {
-    fs.writeFileSync(argv.sarifFile, JSON.stringify(sarifResults));
+    fs.writeFileSync(sarifFile, JSON.stringify(sarifResults));
 }
 catch (err) {
     core.setFailed(`Unable to write SARIF file: ${err}`);
@@ -6415,6 +6422,14 @@ module.exports = require("os");
 
 "use strict";
 module.exports = require("path");
+
+/***/ }),
+
+/***/ 7282:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("process");
 
 /***/ }),
 

@@ -6,7 +6,7 @@ import { parseXml, XmlElement } from '@rgrove/parse-xml'
 import { env } from 'process'
 
 function isXmlElement(xmlThing: any): xmlThing is XmlElement {
-  return xmlThing instanceof XmlElement
+  return xmlThing instanceof XmlElement;
 }
 
 // parse inputs or arguments from command line
@@ -14,30 +14,28 @@ var sarifFile = core.getInput('sarifFile');
 var cweFile = core.getInput('cweFile');
 
 if (env.CI !== 'true') {
-  const argv = yargs(hideBin(process.argv))
-  .options({
+  const argv = yargs(hideBin(process.argv)).options({
     sarifFile: {type: 'string', demandOption: true},
     cweFile: {type: 'string', demandOption: true}
-  })
-  .parseSync();
+  }).parseSync();
   sarifFile = argv.sarifFile;
   cweFile = argv.cweFile;
 }
 
 // load SARIF file
 try {
-  var sarifResults = JSON.parse(fs.readFileSync(sarifFile, 'utf8'))
+  var sarifResults = JSON.parse(fs.readFileSync(sarifFile, 'utf8'));
 } catch (err) {
-  core.setFailed(`Unable to load SARIF file: ${err}`)
-  process.exit(1)
+  core.setFailed(`Unable to load SARIF file: ${err}`);
+  process.exit(1);
 }
 
 // load security standard CWE list
 try {
-  var cweList = parseXml(fs.readFileSync(cweFile, 'utf8'))
+  var cweList = parseXml(fs.readFileSync(cweFile, 'utf8'));
 } catch (err) {
-  core.setFailed(`Unable to load CWE list: ${err}`)
-  process.exit(1)
+  core.setFailed(`Unable to load CWE list: ${err}`);
+  process.exit(1);
 }
 
 var cweIDList: number[] = []
@@ -47,7 +45,7 @@ cweList.children.filter(isXmlElement).forEach(child => {
     child.children.filter(isXmlElement).forEach(child => {
       if (child.name === 'Weaknesses') {
         child.children.filter(isXmlElement).forEach(weakness => {
-          cweIDList.push(parseInt(weakness.attributes.ID))
+          cweIDList.push(parseInt(weakness.attributes.ID));
         })
       }
     })
@@ -62,9 +60,9 @@ sarifResults.runs.forEach((run: any) => {
     extension.rules?.forEach((rule: any) => {
       rule.properties?.tags?.forEach((tag: string) => {
         if (tag.startsWith('external/cwe/cwe-')) {
-          const cweId = tag.split('-').pop()
-          if (cweId !== undefined && cweIDList.includes(parseInt(cweId))) {
-            rule.properties.tags.push('owasp-2021')
+          const cweId = tag.split('-').pop();
+          if (cweId !== undefined && cweIDList.includes(parseInt(cweId)) && !rule.properties.tags.includes('owasp-2021')) {
+            rule.properties.tags.push('owasp-2021');
           }
         }
       })
@@ -76,6 +74,6 @@ sarifResults.runs.forEach((run: any) => {
 try {
   fs.writeFileSync(sarifFile, JSON.stringify(sarifResults))
 } catch (err) {
-  core.setFailed(`Unable to write SARIF file: ${err}`)
-  process.exit(1)
+  core.setFailed(`Unable to write SARIF file: ${err}`);
+  process.exit(1);
 }

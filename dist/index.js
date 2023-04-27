@@ -46,12 +46,10 @@ function isXmlElement(xmlThing) {
 var sarifFile = core.getInput('sarifFile');
 var cweFile = core.getInput('cweFile');
 if (process_1.env.CI !== 'true') {
-    const argv = (0, yargs_1.default)((0, helpers_1.hideBin)(process.argv))
-        .options({
+    const argv = (0, yargs_1.default)((0, helpers_1.hideBin)(process.argv)).options({
         sarifFile: { type: 'string', demandOption: true },
         cweFile: { type: 'string', demandOption: true }
-    })
-        .parseSync();
+    }).parseSync();
     sarifFile = argv.sarifFile;
     cweFile = argv.cweFile;
 }
@@ -94,7 +92,7 @@ sarifResults.runs.forEach((run) => {
             (_b = (_a = rule.properties) === null || _a === void 0 ? void 0 : _a.tags) === null || _b === void 0 ? void 0 : _b.forEach((tag) => {
                 if (tag.startsWith('external/cwe/cwe-')) {
                     const cweId = tag.split('-').pop();
-                    if (cweId !== undefined && cweIDList.includes(parseInt(cweId))) {
+                    if (cweId !== undefined && cweIDList.includes(parseInt(cweId)) && !rule.properties.tags.includes('owasp-2021')) {
                         rule.properties.tags.push('owasp-2021');
                     }
                 }

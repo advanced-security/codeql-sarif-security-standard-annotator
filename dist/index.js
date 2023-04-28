@@ -31,7 +31,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 var _a, _b, _c;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const process_1 = __nccwpck_require__(282);
+/* eslint-disable no-console */
+const path_1 = __nccwpck_require__(17);
 const fs_1 = __nccwpck_require__(147);
 const core = __importStar(__nccwpck_require__(186));
 const xmldom_1 = __nccwpck_require__(213);
@@ -39,18 +40,18 @@ const xpath = __importStar(__nccwpck_require__(319));
 // Global variables
 let sarifResults;
 let cweXml;
-const defaultCweFilePath = `${process_1.env.GITHUB_ACTION_PATH}/security-standards/owasp-top10-2021.xml`;
+const defaultCweFilePath = (0, path_1.resolve)((0, path_1.dirname)(process.argv[1]), '..//security-standards/owasp-top10-2021.xml');
 const codeQlCweTagPrefix = 'external/cwe/cwe-';
 const xmlNs = { cwe: 'http://cwe.mitre.org/cwe-6' };
 const cweIdXpath = '/cwe:Weakness_Catalog/cwe:Weaknesses/cwe:Weakness/@ID';
 // Parse Actions inputs
-const sarifFilePath = core.getInput('sarifFile');
-const cweFilePath = core.getInput('cweFile') || defaultCweFilePath;
+const sarifFilePath = (0, path_1.resolve)(core.getInput('sarifFile'));
+const cweFilePath = (0, path_1.resolve)(core.getInput('cweFile') || defaultCweFilePath);
 const securityStandardTag = core.getInput('securityStandardTag');
-const outputFilePath = core.getInput('outputFile') || sarifFilePath;
-core.notice(`Using ${sarifFilePath} for SARIF file`);
-core.notice(`Using ${cweFilePath} for CWE file`);
-core.notice(`Using ${outputFilePath} for output file`);
+const outputFilePath = (0, path_1.resolve)(core.getInput('outputFile') || sarifFilePath);
+console.log(`Using ${sarifFilePath} for SARIF file`);
+console.log(`Using ${cweFilePath} for CWE file`);
+console.log(`Using ${outputFilePath} for output file`);
 // Load SARIF file
 try {
     sarifResults = JSON.parse((0, fs_1.readFileSync)(sarifFilePath, 'utf8'));
@@ -11050,14 +11051,6 @@ module.exports = require("os");
 
 "use strict";
 module.exports = require("path");
-
-/***/ }),
-
-/***/ 282:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("process");
 
 /***/ }),
 

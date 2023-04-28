@@ -19,6 +19,10 @@ const cweFilePath = core.getInput('cweFile') || defaultCweFilePath
 const securityStandardTag = core.getInput('securityStandardTag')
 const outputFilePath = core.getInput('outputFile') || sarifFilePath
 
+core.notice(`Using ${sarifFilePath} for SARIF file`)
+core.notice(`Using ${cweFilePath} for CWE file`)
+core.notice(`Using ${outputFilePath} for output file`)
+
 // Load SARIF file
 try {
   sarifResults = JSON.parse(readFileSync(sarifFilePath, 'utf8'))

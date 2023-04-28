@@ -20,6 +20,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: env
-      - uses: .
+      - uses: ./
         with:
           sarifFile: ./test-data/webgoat.sarif

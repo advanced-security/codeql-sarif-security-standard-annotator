@@ -1,6 +1,6 @@
 {
   "name": "codeql-sarif-security-standard-annotator",
-  "version": "beta-0.0.1",
+  "version": "v1.0.0",
   "private": true,
   "description": "Compare a CodeQL SARIF results file to a security standard CWE list and annotate the SARIF rules with a tag to highlight results applicable to the security standard",
   "main": "lib/main.js",

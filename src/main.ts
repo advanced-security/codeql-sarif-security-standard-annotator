@@ -61,7 +61,7 @@ for (const run of sarifResults.runs) {
 
 // Output SARIF file with tag added
 try {
-  writeFileSync(argv.outputFile, JSON.stringify(sarifResults))
+  writeFileSync(argv.outputFile || argv.sarifFile, JSON.stringify(sarifResults))
 } catch (err) {
   core.setFailed(`Unable to write SARIF file: ${err}`)
   process.exit(1)

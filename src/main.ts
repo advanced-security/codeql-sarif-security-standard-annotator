@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import {resolve} from 'path'
+import {resolve, dirname} from 'path'
 import {readFileSync, writeFileSync} from 'fs'
 import * as core from '@actions/core'
 import {DOMParser} from '@xmldom/xmldom'
@@ -9,7 +9,7 @@ import type {Log} from 'sarif'
 // Global variables
 let sarifResults: Log
 let cweXml: Document
-const defaultCweFilePath = resolve(__dirname, '..//security-standards/owasp-top10-2021.xml')
+const defaultCweFilePath = resolve(dirname(process.argv[1]), '..//security-standards/owasp-top10-2021.xml')
 const codeQlCweTagPrefix = 'external/cwe/cwe-'
 const xmlNs = {cwe: 'http://cwe.mitre.org/cwe-6'}
 const cweIdXpath = '/cwe:Weakness_Catalog/cwe:Weaknesses/cwe:Weakness/@ID'

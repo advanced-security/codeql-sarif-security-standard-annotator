@@ -18,7 +18,5 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - run: echo "${{ github.action_path }} ${{ inputs.sarifFile }}"
-      shell: bash
     - run: node '${{ github.action_path }}/dist/index.js'
       shell: bash

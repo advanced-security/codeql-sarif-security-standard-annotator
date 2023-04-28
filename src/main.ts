@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import {env} from 'process'
 import {readFileSync, writeFileSync} from 'fs'
 import * as core from '@actions/core'
@@ -19,9 +20,9 @@ const cweFilePath = core.getInput('cweFile') || defaultCweFilePath
 const securityStandardTag = core.getInput('securityStandardTag')
 const outputFilePath = core.getInput('outputFile') || sarifFilePath
 
-core.notice(`Using ${sarifFilePath} for SARIF file`)
-core.notice(`Using ${cweFilePath} for CWE file`)
-core.notice(`Using ${outputFilePath} for output file`)
+console.log(`Using ${sarifFilePath} for SARIF file`)
+console.log(`Using ${cweFilePath} for CWE file`)
+console.log(`Using ${outputFilePath} for output file`)
 
 // Load SARIF file
 try {

@@ -19,7 +19,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: env
-      - uses: ./
+      - uses: '${{ github.repository }}@${{ github.sha }}'
         with:
           sarifFile: ./test-data/webgoat.sarif

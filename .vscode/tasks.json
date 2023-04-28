@@ -1,0 +1,19 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Remove output SARIF file",
+            "type": "shell",
+            "command": "rm ${workspaceFolder}/test-data/java-with-security-standard-tag.sarif"
+        },
+        {
+            "label": "Build & remove output SARIF file",
+            "dependsOn": [
+                "Remove output SARIF file",
+                "tsc: build - tsconfig.json"
+            ],
+        }
+    ]
+}

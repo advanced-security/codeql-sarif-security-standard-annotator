@@ -11,10 +11,15 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "preLaunchTask": "tsc: build - tsconfig.json",
+            "preLaunchTask": "Build & remove output SARIF file",
             "outFiles": ["${workspaceFolder}/lib/**/*.js"],
             "program": "${workspaceFolder}/src/main.ts",
-            "args": ["--sarifFile", "${workspaceFolder}/testdata/java.sarif", "--cweFile", "${workspaceFolder}/testdata/1344.xml"],
+            "args": [
+                "--sarifFile", "${workspaceFolder}/test-data/webgoat.sarif",
+                "--cweFile", "${workspaceFolder}/security-standards/owasp-top10-2021.xml",
+                "--securityStandardTag", "owasp-top10-2021",
+                "--outputFile", "${workspaceFolder}/test-data/webgoat-with-security-standard-tag.sarif"
+            ],
         }
     ]
 }

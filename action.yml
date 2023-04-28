@@ -16,12 +16,5 @@ inputs:
     required: false
     description: 'The output SARIF file path, defaults to the input SARIF file path'
 runs:
-  using: 'composite'
-  steps:
-    - run: node '${{ github.action_path }}/dist/index.js'
-      with:
-        sarifFile: ${{ inputs.sarifFile }}
-        cweFile: ${{ inputs.cweFile }}
-        securityStandardTag: ${{ inputs.securityStandardTag }}
-        securityStandardTag: ${{ inputs.outputFile }}
-      shell: bash
+  using: 'node16'
+  main: 'dist/index.js'

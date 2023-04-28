@@ -5,8 +5,22 @@ Compare a CodeQL SARIF results file to a security standard CWE list and annotate
 ## Usage in GitHub Actions
 
 ```
+- name: Perform CodeQL Analysis
+  uses: github/codeql-action/analyze@v2
+  with:
+    category: "/language:${{matrix.language}}"
+    upload: false
+    output: sarif-results
+
 - name: Annotate CodeQL SARIF with OWASP Top 10 2021 tag
   uses: ctcampbell/codeql-sarif-security-standard-annotator@v1
+  with:
+    sarifFile: sarif-results/${{matrix.language}}.sarif
+
+- name: Upload SARIF
+  uses: github/codeql-action/upload-sarif@v2
+  with:
+    sarif_file: sarif-results/${{matrix.language}}.sarif
 ```
 
 ```
@@ -25,5 +39,4 @@ inputs:
   outputFile:
     required: false
     description: 'The output SARIF file path, defaults to the input SARIF file path'
-    default: '${{ inputs.sarifFile }}'
 ```

@@ -21,4 +21,9 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ./
         with:
-          milliseconds: 1000
+          sarifFile: test-data/webgoat.sarif
+      - name: Archive SARIF output
+        uses: actions/upload-artifact@v3
+        with:
+          name: sarif-output
+          path: test-data/webgoat.sarif

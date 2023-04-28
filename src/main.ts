@@ -1,5 +1,4 @@
-import yargs from 'yargs'
-import {hideBin} from 'yargs/helpers'
+import {env} from 'process'
 import {readFileSync, writeFileSync} from 'fs'
 import * as core from '@actions/core'
 import {DOMParser} from '@xmldom/xmldom'
@@ -9,23 +8,20 @@ import type {Log} from 'sarif'
 // Global variables
 let sarifResults: Log
 let cweXml: Document
+const defaultCweFilePath = `${env.GITHUB_ACTION_PATH}/security-standards/owasp-top10-2021.xml`
 const codeQlCweTagPrefix = 'external/cwe/cwe-'
 const xmlNs = {cwe: 'http://cwe.mitre.org/cwe-6'}
 const cweIdXpath = '/cwe:Weakness_Catalog/cwe:Weaknesses/cwe:Weakness/@ID'
 
-// Parse arguments
-const argv = yargs(hideBin(process.argv))
-  .options({
-    sarifFile: {type: 'string', demandOption: true},
-    cweFile: {type: 'string', demandOption: true},
-    securityStandardTag: {type: 'string', demandOption: true},
-    outputFile: {type: 'string', demandOption: true}
-  })
-  .parseSync()
+// Parse Actions inputs
+const sarifFilePath = core.getInput('sarifFile')
+const cweFilePath = core.getInput('cweFile') || defaultCweFilePath
+const securityStandardTag = core.getInput('securityStandardTag')
+const outputFilePath = core.getInput('outputFile') || sarifFilePath
 
 // Load SARIF file
 try {
-  sarifResults = JSON.parse(readFileSync(argv.sarifFile, 'utf8'))
+  sarifResults = JSON.parse(readFileSync(sarifFilePath, 'utf8'))
 } catch (err) {
   core.setFailed(`Unable to load SARIF file: ${err}`)
   process.exit(1)
@@ -33,7 +29,7 @@ try {
 
 // Load security standard CWE XML file
 try {
-  cweXml = new DOMParser().parseFromString(readFileSync(argv.cweFile, 'utf8'))
+  cweXml = new DOMParser().parseFromString(readFileSync(cweFilePath, 'utf8'))
 } catch (err) {
   core.setFailed(`Unable to load CWE file: ${err}`)
   process.exit(1)
@@ -50,7 +46,7 @@ for (const run of sarifResults.runs) {
         if (tag.startsWith(codeQlCweTagPrefix)) {
           const cweId = tag.replace(codeQlCweTagPrefix, '')
           if (cweIdArray.includes(cweId)) {
-            rule.properties?.tags?.push(argv.securityStandardTag)
+            rule.properties?.tags?.push(securityStandardTag)
             break
           }
         }
@@ -61,7 +57,7 @@ for (const run of sarifResults.runs) {
 
 // Output SARIF file with tag added
 try {
-  writeFileSync(argv.outputFile || argv.sarifFile, JSON.stringify(sarifResults))
+  writeFileSync(outputFilePath, JSON.stringify(sarifResults))
 } catch (err) {
   core.setFailed(`Unable to write SARIF file: ${err}`)
   process.exit(1)

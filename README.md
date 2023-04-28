@@ -30,8 +30,7 @@ inputs:
     description: 'The CodeQL SARIF result file'
   cweFile:
     required: false
-    description: 'The CWE list XML file'
-    default: '${{ github.action_path }}/security-standards/owasp-top10-2021.xml'
+    description: 'The CWE list XML file, defaults to OWASP Top 10 2021'
   securityStandardTag:
     required: false
     description: 'The security standard tag to add to the SARIF file'

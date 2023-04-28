@@ -19,4 +19,9 @@ runs:
   using: 'composite'
   steps:
     - run: node '${{ github.action_path }}/dist/index.js'
+      with:
+        sarifFile: ${{ inputs.sarifFile }}
+        cweFile: ${{ inputs.cweFile }}
+        securityStandardTag: ${{ inputs.securityStandardTag }}
+        securityStandardTag: ${{ inputs.outputFile }}
       shell: bash

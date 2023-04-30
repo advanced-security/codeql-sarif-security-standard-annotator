@@ -107,7 +107,7 @@ const cweIdArray = cweIdAttributes.map(attribute => attribute.value);
 (0, jsonpath_plus_1.JSONPath)({
     path: codeQlTagsJsonPath,
     json: sarifResults,
-    callback: tags => {
+    callback: (tags) => {
         for (const tag of tags) {
             if (tag.startsWith(codeQlCweTagPrefix)) {
                 const cweId = tag.replace(codeQlCweTagPrefix, '');

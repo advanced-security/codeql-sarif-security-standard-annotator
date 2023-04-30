@@ -8,6 +8,9 @@ inputs:
   cweFile:
     required: false
     description: 'The CWE list XML file, defaults to OWASP Top 10 2021'
+  cweIdXpath:
+    required: false
+    description: 'The XPath query that selects CWE ID numbers from the CWE list file'
   securityStandardTag:
     required: false
     description: 'The security standard tag to add to the SARIF file, defaults to "owasp-top10-2021"'

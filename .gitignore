@@ -1,4 +1,4 @@
-test-data/java-with-security-standard-tag.sarif
+test-data/webgoat-with-security-standard-tag.sarif
 
 # Dependency directory
 node_modules

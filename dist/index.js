@@ -42,7 +42,6 @@ const fs_1 = __nccwpck_require__(7147);
 const core = __importStar(__nccwpck_require__(2186));
 const xmldom_1 = __nccwpck_require__(9213);
 const xpath = __importStar(__nccwpck_require__(5319));
-// import type {Log} from 'sarif'
 const jsonpath_plus_1 = __nccwpck_require__(4697);
 let sarifFilePath;
 let cweFilePath;
@@ -120,21 +119,6 @@ const cweIdArray = cweIdAttributes.map(attribute => attribute.value);
         }
     }
 });
-// for (const run of sarifResults.runs) {
-//   for (const extension of run.tool.extensions || []) {
-//     for (const rule of extension.rules || []) {
-//       for (const tag of rule.properties?.tags || []) {
-//         if (tag.startsWith(codeQlCweTagPrefix)) {
-//           const cweId = tag.replace(codeQlCweTagPrefix, '')
-//           if (cweIdArray.includes(cweId)) {
-//             rule.properties?.tags?.push(securityStandardTag)
-//             break
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
 // Output SARIF file with tag added
 try {
     (0, fs_1.writeFileSync)(outputFilePath, JSON.stringify(sarifResults));

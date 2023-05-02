@@ -16,7 +16,7 @@ Compare a CodeQL SARIF results file to a security standard CWE list and annotate
     output: sarif-results
 
 - name: Annotate CodeQL SARIF with OWASP Top 10 2021 tag
-  uses: ctcampbell/codeql-sarif-security-standard-annotator@v1
+  uses: advanced-security/codeql-sarif-security-standard-annotator@v1
   with:
     sarifFile: sarif-results/${{matrix.language}}.sarif
 

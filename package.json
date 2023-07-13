@@ -28,7 +28,7 @@
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.10.0",
-    "@xmldom/xmldom": "^0.8.7",
+    "@xmldom/xmldom": "^0.8.9",
     "jsonpath-plus": "^7.2.0",
     "xpath": "^0.0.32",
     "yargs": "^17.7.2"

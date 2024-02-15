@@ -8,8 +8,7 @@ Compare a CodeQL SARIF results file to a security standard CWE list and annotate
 
 This supports the ability to filter the Security dashboards by `tag`
 <img width="783" alt="filter the Security dashboards by tag" src="https://github.com/advanced-security/codeql-sarif-security-standard-annotator/assets/1760475/ca1b5519-2a9c-4f03-8dca-4f03bc6fbc05">
-<br/>
-<br/>
+<br/><br/>
 As well as displaying this information along side the Code scanning alert
 <img width="614" alt="displaying this information along side the Code scanning alert" src="https://github.com/advanced-security/codeql-sarif-security-standard-annotator/assets/1760475/30b1c71a-8ee0-4c49-acbf-2161df7c7582">
 

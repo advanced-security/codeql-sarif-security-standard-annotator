@@ -15,15 +15,15 @@ let sarifResults: Object
 let cweXml: Document
 
 let cweFilePath = resolve(dirname(process.argv[1]), '..//security-standards/owasp-top10-2021.xml')
-let cweFileXmlNs = {cwe: 'http://cwe.mitre.org/cwe-6'}
+const cweFileXmlNs = {cwe: 'http://cwe.mitre.org/cwe-6'}
 let cweIdXpath = '/cwe:Weakness_Catalog/cwe:Weaknesses/cwe:Weakness/@ID'
 let categoryXpath = '/cwe:Weakness_Catalog/cwe:Categories/cwe:Category[contains(@Name, "OWASP Top Ten 2021")]'
-let categoryMembersXpath = 'cwe:Relationships/cwe:Has_Member/@CWE_ID'
-let categoryNameAttr = '@Name'
-let categoryNameReplaceSearch = 'OWASP Top Ten 2021 Category '
-let codeQlCweTagPrefix = 'external/cwe/cwe-'
+const categoryMembersXpath = 'cwe:Relationships/cwe:Has_Member/@CWE_ID'
+const categoryNameAttr = '@Name'
+const categoryNameReplaceSearch = 'OWASP Top Ten 2021 Category '
+const codeQlCweTagPrefix = 'external/cwe/cwe-'
 let securityStandardTag = 'owasp-top10-2021'
-let codeQlTagsJsonPath = '$.runs[*].tool.extensions[*].rules[*].properties.tags'
+const codeQlTagsJsonPath = '$.runs[*].tool.extensions[*].rules[*].properties.tags'
 
 // Parse Actions or CLI inputs
 if (env.GITHUB_ACTIONS === 'true') {
@@ -74,11 +74,11 @@ try {
 }
 const select = xpath.useNamespaces(cweFileXmlNs)
 const cweIds = (select(cweIdXpath, cweXml) as Attr[]).map(attribute => attribute.value)
-const cweCategoryNodes = (select(categoryXpath, cweXml) as Node[])
-let cweCategories: {[k: string]: string[]} = {}
+const cweCategoryNodes = select(categoryXpath, cweXml) as Node[]
+const cweCategories: {[k: string]: string[]} = {}
 for (const cweCategoryNode of cweCategoryNodes) {
-  let memberCweIds = (select(categoryMembersXpath, cweCategoryNode) as Attr[]).map(attr => attr.value)
-  let categoryName = (select(categoryNameAttr, cweCategoryNode, true) as Attr).value.replace(categoryNameReplaceSearch, '')
+  const memberCweIds = (select(categoryMembersXpath, cweCategoryNode) as Attr[]).map(attr => attr.value)
+  const categoryName = (select(categoryNameAttr, cweCategoryNode, true) as Attr).value.replace(categoryNameReplaceSearch, '')
   for (const cweId of memberCweIds) {
     cweCategories[cweId] = [...(cweCategories[cweId] || []), categoryName]
   }

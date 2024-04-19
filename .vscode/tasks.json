@@ -6,7 +6,7 @@
         {
             "label": "Remove output SARIF file",
             "type": "shell",
-            "command": "rm ${workspaceFolder}/test-data/webgoat-with-security-standard-tag.sarif"
+            "command": "rm -f ${workspaceFolder}/test-data/webgoat-with-security-standard-tag.sarif"
         },
         {
             "label": "Build & remove output SARIF file",

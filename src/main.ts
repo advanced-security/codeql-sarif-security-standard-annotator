@@ -10,41 +10,45 @@ import * as xpath from 'xpath'
 import {JSONPath} from 'jsonpath-plus'
 
 let sarifFilePath: string
-let cweFilePath: string
-let cweIdXpath: string
-let securityStandardTag: string
 let outputFilePath: string
 let sarifResults: Object
 let cweXml: Document
 
-const defaultCweFilePath = resolve(dirname(process.argv[1]), '..//security-standards/owasp-top10-2021.xml')
-const defaultCweFileXmlNs = {cwe: 'http://cwe.mitre.org/cwe-6'}
-const defaulCweIdXpath = '/cwe:Weakness_Catalog/cwe:Weaknesses/cwe:Weakness/@ID'
-const codeQlTagsJsonPath = '$.runs[*].tool.extensions[*].rules[*].properties.tags'
-const codeQlCweTagPrefix = 'external/cwe/cwe-'
-const defaultSecurityStandardTag = 'owasp-top10-2021'
+let cweFilePath = resolve(dirname(process.argv[1]), '..//security-standards/owasp-top10-2021.xml')
+let cweFileXmlNs = {cwe: 'http://cwe.mitre.org/cwe-6'}
+let cweIdXpath = '/cwe:Weakness_Catalog/cwe:Weaknesses/cwe:Weakness/@ID'
+let categoryXpath = '/cwe:Weakness_Catalog/cwe:Categories/cwe:Category[contains(@Name, "OWASP Top Ten 2021")]'
+let categoryMembersXpath = 'cwe:Relationships/cwe:Has_Member/@CWE_ID'
+let categoryNameAttr = '@Name'
+let categoryNameReplaceSearch = 'OWASP Top Ten 2021 Category '
+let codeQlCweTagPrefix = 'external/cwe/cwe-'
+let securityStandardTag = 'owasp-top10-2021'
+let codeQlTagsJsonPath = '$.runs[*].tool.extensions[*].rules[*].properties.tags'
 
 // Parse Actions or CLI inputs
 if (env.GITHUB_ACTIONS === 'true') {
   sarifFilePath = resolve(core.getInput('sarifFile'))
-  cweFilePath = resolve(core.getInput('cweFile') || defaultCweFilePath)
-  cweIdXpath = core.getInput('cweIdXpath') || defaulCweIdXpath
-  securityStandardTag = core.getInput('securityStandardTag') || defaultSecurityStandardTag
+  cweFilePath = resolve(core.getInput('cweFile') || cweFilePath)
+  cweIdXpath = core.getInput('cweIdXpath') || cweIdXpath
+  categoryXpath = core.getInput('cweCategoryXpath') || categoryXpath
+  securityStandardTag = core.getInput('securityStandardTag') || securityStandardTag
   outputFilePath = resolve(core.getInput('outputFile') || sarifFilePath)
 } else {
   const argv = yargs(hideBin(process.argv))
     .options({
       sarifFile: {type: 'string', demandOption: true},
-      cweFile: {type: 'string'},
-      cweIdXpath: {type: 'string'},
-      securityStandardTag: {type: 'string'},
+      cweFile: {type: 'string', default: cweFilePath},
+      cweIdXpath: {type: 'string', default: cweIdXpath},
+      cweCategoryXpath: {type: 'string', default: categoryXpath},
+      securityStandardTag: {type: 'string', default: securityStandardTag},
       outputFile: {type: 'string'}
     })
     .parseSync()
   sarifFilePath = resolve(argv.sarifFile)
-  cweFilePath = resolve(argv.cweFile || defaultCweFilePath)
-  cweIdXpath = argv.cweIdXpath || defaulCweIdXpath
-  securityStandardTag = argv.securityStandardTag || defaultSecurityStandardTag
+  cweFilePath = resolve(argv.cweFile)
+  cweIdXpath = argv.cweIdXpath
+  categoryXpath = argv.cweCategoryXpath
+  securityStandardTag = argv.securityStandardTag
   outputFilePath = resolve(argv.outputFile || sarifFilePath)
 }
 
@@ -64,13 +68,21 @@ try {
 try {
   cweXml = new DOMParser().parseFromString(readFileSync(cweFilePath, 'utf8'))
 } catch (err) {
+  console.log(`Unable to load CWE file: ${err}`)
   core.setFailed(`Unable to load CWE file: ${err}`)
   process.exit(1)
 }
-const select = xpath.useNamespaces(defaultCweFileXmlNs)
-// Can't use instanceof Attr type to filter as Attr is not defined in the Node runtime and not exposed by xmldom
-const cweIdAttributes = select(cweIdXpath, cweXml).filter((x): x is Attr => Object.getPrototypeOf(x).constructor.name === 'Attr')
-const cweIdArray = cweIdAttributes.map(attribute => attribute.value)
+const select = xpath.useNamespaces(cweFileXmlNs)
+const cweIds = (select(cweIdXpath, cweXml) as Attr[]).map(attribute => attribute.value)
+const cweCategoryNodes = (select(categoryXpath, cweXml) as Node[])
+let cweCategories: {[k: string]: string[]} = {}
+for (const cweCategoryNode of cweCategoryNodes) {
+  let memberCweIds = (select(categoryMembersXpath, cweCategoryNode) as Attr[]).map(attr => attr.value)
+  let categoryName = (select(categoryNameAttr, cweCategoryNode, true) as Attr).value.replace(categoryNameReplaceSearch, '')
+  for (const cweId of memberCweIds) {
+    cweCategories[cweId] = [...(cweCategories[cweId] || []), categoryName]
+  }
+}
 
 // Add tag to SARIF file
 JSONPath({
@@ -80,8 +92,9 @@ JSONPath({
     for (const tag of tags) {
       if (tag.startsWith(codeQlCweTagPrefix)) {
         const cweId = tag.replace(codeQlCweTagPrefix, '')
-        if (cweIdArray.includes(cweId)) {
+        if (cweIds.includes(cweId)) {
           tags.push(securityStandardTag)
+          tags.push(...cweCategories[cweId])
           return
         }
       }

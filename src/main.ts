@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import {resolve, dirname} from 'path'
 import {env} from 'process'
 import yargs from 'yargs'
@@ -8,6 +7,7 @@ import * as core from '@actions/core'
 import {DOMParser} from '@xmldom/xmldom'
 import * as xpath from 'xpath'
 import {JSONPath} from 'jsonpath-plus'
+import {LogLevel, log} from './utils'
 
 let sarifFilePath: string
 let outputFilePath: string
@@ -52,25 +52,26 @@ if (env.GITHUB_ACTIONS === 'true') {
   outputFilePath = resolve(argv.outputFile || sarifFilePath)
 }
 
-console.log(`Using ${sarifFilePath} for SARIF file`)
-console.log(`Using ${cweFilePath} for CWE file`)
-console.log(`Using ${outputFilePath} for output file`)
+log(`Using ${sarifFilePath} for SARIF file`)
+log(`Using ${cweFilePath} for CWE file`)
+log(`Using ${outputFilePath} for output file`)
 
 // Load SARIF file
 try {
   sarifResults = JSON.parse(readFileSync(sarifFilePath, 'utf8'))
 } catch (err) {
-  core.setFailed(`Unable to load SARIF file: ${err}`)
-  process.exit(1)
+  log(`Unable to load SARIF file`, LogLevel.Error)
+  core.setFailed(err as Error)
+  throw err
 }
 
 // Load security standard CWE XML file
 try {
   cweXml = new DOMParser().parseFromString(readFileSync(cweFilePath, 'utf8'))
 } catch (err) {
-  console.log(`Unable to load CWE file: ${err}`)
-  core.setFailed(`Unable to load CWE file: ${err}`)
-  process.exit(1)
+  log(`Unable to load CWE file`, LogLevel.Error)
+  core.setFailed(err as Error)
+  throw err
 }
 const select = xpath.useNamespaces(cweFileXmlNs)
 const cweIds = (select(cweIdXpath, cweXml) as Attr[]).map(attribute => attribute.value)
@@ -106,6 +107,7 @@ JSONPath({
 try {
   writeFileSync(outputFilePath, JSON.stringify(sarifResults))
 } catch (err) {
-  core.setFailed(`Unable to write SARIF file: ${err}`)
-  process.exit(1)
+  log(`Unable to write SARIF file`, LogLevel.Error)
+  core.setFailed(err as Error)
+  throw err
 }

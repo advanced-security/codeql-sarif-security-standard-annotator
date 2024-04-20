@@ -28,3 +28,7 @@ jobs:
         with:
           name: sarif-output
           path: test-data/webgoat.sarif
+      - uses: ./
+        continue-on-error: true
+        with:
+          sarifFile: test-data/webgoat1.sarif

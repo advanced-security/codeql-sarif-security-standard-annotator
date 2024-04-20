@@ -33,7 +33,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-/* eslint-disable no-console */
 const path_1 = __nccwpck_require__(1017);
 const process_1 = __nccwpck_require__(7282);
 const yargs_1 = __importDefault(__nccwpck_require__(8822));
@@ -43,6 +42,7 @@ const core = __importStar(__nccwpck_require__(2186));
 const xmldom_1 = __nccwpck_require__(9213);
 const xpath = __importStar(__nccwpck_require__(5319));
 const jsonpath_plus_1 = __nccwpck_require__(4697);
+const utils_1 = __nccwpck_require__(918);
 let sarifFilePath;
 let outputFilePath;
 let sarifResults;
@@ -84,25 +84,26 @@ else {
     securityStandardTag = argv.securityStandardTag;
     outputFilePath = (0, path_1.resolve)(argv.outputFile || sarifFilePath);
 }
-console.log(`Using ${sarifFilePath} for SARIF file`);
-console.log(`Using ${cweFilePath} for CWE file`);
-console.log(`Using ${outputFilePath} for output file`);
+(0, utils_1.log)(`Using ${sarifFilePath} for SARIF file`);
+(0, utils_1.log)(`Using ${cweFilePath} for CWE file`);
+(0, utils_1.log)(`Using ${outputFilePath} for output file`);
 // Load SARIF file
 try {
     sarifResults = JSON.parse((0, fs_1.readFileSync)(sarifFilePath, 'utf8'));
 }
 catch (err) {
-    core.setFailed(`Unable to load SARIF file: ${err}`);
-    process.exit(1);
+    (0, utils_1.log)(`Unable to load SARIF file`, utils_1.LogLevel.Error);
+    core.setFailed(err);
+    throw err;
 }
 // Load security standard CWE XML file
 try {
     cweXml = new xmldom_1.DOMParser().parseFromString((0, fs_1.readFileSync)(cweFilePath, 'utf8'));
 }
 catch (err) {
-    console.log(`Unable to load CWE file: ${err}`);
-    core.setFailed(`Unable to load CWE file: ${err}`);
-    process.exit(1);
+    (0, utils_1.log)(`Unable to load CWE file`, utils_1.LogLevel.Error);
+    core.setFailed(err);
+    throw err;
 }
 const select = xpath.useNamespaces(cweFileXmlNs);
 const cweIds = select(cweIdXpath, cweXml).map(attribute => attribute.value);
@@ -137,10 +138,89 @@ try {
     (0, fs_1.writeFileSync)(outputFilePath, JSON.stringify(sarifResults));
 }
 catch (err) {
-    core.setFailed(`Unable to write SARIF file: ${err}`);
-    process.exit(1);
+    (0, utils_1.log)(`Unable to write SARIF file`, utils_1.LogLevel.Error);
+    core.setFailed(err);
+    throw err;
 }
 //# sourceMappingURL=main.js.map
+
+/***/ }),
+
+/***/ 918:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.log = exports.LogLevel = void 0;
+/* eslint-disable no-console */
+const process_1 = __nccwpck_require__(7282);
+const core = __importStar(__nccwpck_require__(2186));
+var LogLevel;
+(function (LogLevel) {
+    LogLevel["Info"] = "Info";
+    LogLevel["Warn"] = "Warn";
+    LogLevel["Error"] = "Error";
+})(LogLevel || (exports.LogLevel = LogLevel = {}));
+function log(message, level = LogLevel.Info) {
+    if (process_1.env.GITHUB_ACTIONS === 'true') {
+        switch (level) {
+            case LogLevel.Info: {
+                core.info(message);
+                break;
+            }
+            case LogLevel.Warn: {
+                core.warning(message);
+                break;
+            }
+            case LogLevel.Error: {
+                core.error(message);
+                break;
+            }
+        }
+    }
+    else {
+        switch (level) {
+            case LogLevel.Info: {
+                console.info(message);
+                break;
+            }
+            case LogLevel.Warn: {
+                console.warn(message);
+                break;
+            }
+            case LogLevel.Error: {
+                console.error(message);
+                break;
+            }
+        }
+    }
+}
+exports.log = log;
+//# sourceMappingURL=utils.js.map
 
 /***/ }),
 

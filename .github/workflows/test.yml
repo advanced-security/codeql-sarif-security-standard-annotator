@@ -35,7 +35,7 @@ jobs:
         with:
           sarifFile: test-data/webgoat1.sarif
       - name: Archive SARIF output
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: sarif-output
           path: test-data/webgoat-with-security-standard-tag.sarif

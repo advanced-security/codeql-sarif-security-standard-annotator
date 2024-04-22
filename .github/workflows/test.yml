@@ -1,5 +1,6 @@
 name: 'build-test'
-on: # rebuild any PRs and main branch changes
+
+on:
   pull_request:
   push:
     branches:
@@ -19,12 +20,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: ./
+      - name: Run action
+        uses: ./
         with:
           sarifFile: test-data/webgoat.sarif
-      - run: grep -c '"owasp-top10-2021"' test-data/webgoat.sarif
+          outputFile: test-data/webgoat-with-security-standard-tag.sarif
+      - name: Check output
+        run: |
+          grep -c '"owasp-top10-2021"' test-data/webgoat-with-security-standard-tag.sarif
+          diff test-data/webgoat-with-security-standard-tag.sarif test-data/webgoat-with-security-standard-tag.sarif.expected
+      - name: Check error handling
+        uses: ./
+        continue-on-error: true
+        with:
+          sarifFile: test-data/webgoat1.sarif
       - name: Archive SARIF output
         uses: actions/upload-artifact@v3
         with:
           name: sarif-output
-          path: test-data/webgoat.sarif
+          path: test-data/webgoat-with-security-standard-tag.sarif

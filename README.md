@@ -3,7 +3,7 @@
 Compare a CodeQL SARIF results file to a security standard CWE list and annotate the SARIF rules with a tag to highlight results applicable to the security standard
 
 - Defaults to a comparison against the OWASP Top 10 2021 CWE mapping taken from https://cwe.mitre.org/data/xml/views/1344.xml.zip
-- Any XML file can be provided as an alternative, with the option to provide an XPath query that identifies the CWE ID values to use in the conparison
+- Any XML file can be provided as an alternative, with the option to provide an XPath query that identifies the CWE ID values to use in the comparison
 - Tag value is configurable
 
 This supports the ability to filter the Security dashboards by `tag`

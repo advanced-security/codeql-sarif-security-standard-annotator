@@ -16,20 +16,24 @@ As well as displaying this information along side the Code scanning alert
 
 ```
 - name: Perform CodeQL Analysis
-  uses: github/codeql-action/analyze@v2
+  uses: github/codeql-action/analyze@v3
   with:
     upload: false
     output: sarif-results
 
+- name: Find SARIF file
+  id: find_sarif
+  run: echo "SARIF_FILE=$(find $PWD/sarif-results -name '*.sarif' | head -n 1)" >> $GITHUB_ENV
+
 - name: Annotate CodeQL SARIF with OWASP Top 10 2021 tag
-  uses: advanced-security/codeql-sarif-security-standard-annotator@v1
+  uses: advanced-security/codeql-sarif-security-standard-annotator@main
   with:
-    sarifFile: sarif-results/${{matrix.language}}.sarif
+    sarifFile: ${{ env.SARIF_FILE }}
 
 - name: Upload SARIF
-  uses: github/codeql-action/upload-sarif@v2
+  uses: github/codeql-action/upload-sarif@v3
   with:
-    sarif_file: sarif-results/${{matrix.language}}.sarif
+    sarif_file: sarif-results
 ```
 
 ```

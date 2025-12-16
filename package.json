@@ -28,11 +28,11 @@
   "author": "GitHub, Inc",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.11.1",
-    "@xmldom/xmldom": "^0.8.10",
+    "@actions/core": "^2.0.1",
+    "@xmldom/xmldom": "^0.8.11",
     "jsonpath-plus": "^10.3.0",
     "xpath": "^0.0.34",
-    "yargs": "^17.7.2"
+    "yargs": "^18.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",

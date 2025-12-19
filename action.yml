@@ -18,5 +18,5 @@ inputs:
     required: false
     description: 'The output SARIF file path, defaults to the input SARIF file path'
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'

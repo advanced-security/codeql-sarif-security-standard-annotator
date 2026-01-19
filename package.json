@@ -9,7 +9,7 @@
     "format": "prettier --write '**/*.ts'",
     "format-check": "prettier --check '**/*.ts'",
     "lint": "eslint src/**/*.ts",
-    "package": "ncc build --source-map --license licenses.txt --target es2015 -o dist && mv dist/index.js dist/index.cjs && mv dist/index.js.map dist/index.cjs.map",
+    "package": "ncc build --source-map --license licenses.txt --target es2015 -o dist && mv dist/index.js dist/index.cjs && mv dist/index.js.map dist/index.cjs.map && node scripts/patch-dist.js",
     "test": "jest",
     "release": "release-it",
     "all": "npm run build && npm run format && npm run lint && npm run package"

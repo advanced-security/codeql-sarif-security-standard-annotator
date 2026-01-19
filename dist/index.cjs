@@ -40514,7 +40514,7 @@ function applyExtends(config, cwd, mergeExtends, _shim) {
         let pathToDefault = null;
         if (!isPath) {
             try {
-                pathToDefault = import.meta.resolve(config.extends);
+                pathToDefault = (function(){throw new Error("import.meta not available in CommonJS")})(config.extends);
             }
             catch (_err) {
                 return config;

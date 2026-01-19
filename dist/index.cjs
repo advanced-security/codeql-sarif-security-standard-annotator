@@ -45829,9 +45829,9 @@ const external_node_fs_namespaceObject = require("node:fs");
 
 
 
-const esm_dirname = (0,external_url_.fileURLToPath)(esm_require("url").pathToFileURL(__filename).href);
+const esm_dirname = (0,external_url_.fileURLToPath)(require("url").pathToFileURL(__filename).href);
 const mainFilename = esm_dirname.substring(0, esm_dirname.lastIndexOf('node_modules'));
-const esm_require = (0,external_node_module_.createRequire)(esm_require("url").pathToFileURL(__filename).href);
+const esm_require = (0,external_node_module_.createRequire)(require("url").pathToFileURL(__filename).href);
 
 /* harmony default export */ const esm = ({
   assert: {
@@ -47105,7 +47105,7 @@ if (nodeVersion) {
 }
 // Creates a yargs-parser instance using Node.js standard libraries:
 const env = process ? process.env : {};
-const lib_require = external_node_module_.createRequire ? (0,external_node_module_.createRequire)(lib_require("url").pathToFileURL(__filename).href) : undefined;
+const lib_require = external_node_module_.createRequire ? (0,external_node_module_.createRequire)(require("url").pathToFileURL(__filename).href) : undefined;
 const parser = new YargsParser({
     cwd: process.cwd,
     env: () => {

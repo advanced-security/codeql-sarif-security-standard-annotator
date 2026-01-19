@@ -11,7 +11,7 @@ import {LogLevel, log} from './utils'
 
 let sarifFilePath: string
 let outputFilePath: string
-let sarifResults: Object
+let sarifResults: object
 let cweXml: Document
 
 let cweFilePath = resolve(dirname(process.argv[1]), '..//security-standards/owasp-top10-2021.xml')

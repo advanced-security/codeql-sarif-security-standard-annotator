@@ -9,7 +9,7 @@
     "format": "prettier --write '**/*.ts'",
     "format-check": "prettier --check '**/*.ts'",
     "lint": "eslint src/**/*.ts",
-    "package": "ncc build --source-map --license licenses.txt --target es2015 -o dist && mv dist/index.js dist/index.cjs && mv dist/index.js.map dist/index.cjs.map && node scripts/patch-dist.js",
+    "package": "ncc build --source-map --license licenses.txt",
     "test": "jest",
     "release": "release-it",
     "all": "npm run build && npm run format && npm run lint && npm run package"
@@ -31,8 +31,7 @@
     "@actions/core": "^2.0.1",
     "@xmldom/xmldom": "^0.8.11",
     "jsonpath-plus": "^10.3.0",
-    "xpath": "^0.0.34",
-    "yargs": "^18.0.0"
+    "xpath": "^0.0.34"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",

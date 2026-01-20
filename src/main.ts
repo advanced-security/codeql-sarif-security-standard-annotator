@@ -1,7 +1,5 @@
 import {resolve, dirname} from 'path'
 import {env} from 'process'
-import yargs from 'yargs'
-import {hideBin} from 'yargs/helpers'
 import {readFileSync, writeFileSync} from 'fs'
 import * as core from '@actions/core'
 import {DOMParser} from '@xmldom/xmldom'
@@ -11,7 +9,7 @@ import {LogLevel, log} from './utils'
 
 let sarifFilePath: string
 let outputFilePath: string
-let sarifResults: Object
+let sarifResults: object
 let cweXml: Document
 
 let cweFilePath = resolve(dirname(process.argv[1]), '..//security-standards/owasp-top10-2021.xml')
@@ -25,6 +23,23 @@ const codeQlCweTagPrefix = 'external/cwe/cwe-'
 let securityStandardTag = 'owasp-top10-2021'
 const codeQlTagsJsonPath = '$.runs[*].tool.extensions[*].rules[*].properties.tags'
 
+// Simple CLI argument parser for non-GitHub Actions use
+function parseCliArgs(): Record<string, string> {
+  const args: Record<string, string> = {}
+  for (let i = 2; i < process.argv.length; i++) {
+    const arg = process.argv[i]
+    if (arg.startsWith('--')) {
+      const key = arg.substring(2)
+      const value = process.argv[i + 1]
+      if (value && !value.startsWith('--')) {
+        args[key] = value
+        i++
+      }
+    }
+  }
+  return args
+}
+
 // Parse Actions or CLI inputs
 if (env.GITHUB_ACTIONS === 'true') {
   sarifFilePath = resolve(core.getInput('sarifFile'))
@@ -34,21 +49,16 @@ if (env.GITHUB_ACTIONS === 'true') {
   securityStandardTag = core.getInput('securityStandardTag') || securityStandardTag
   outputFilePath = resolve(core.getInput('outputFile') || sarifFilePath)
 } else {
-  const argv = yargs(hideBin(process.argv))
-    .options({
-      sarifFile: {type: 'string', demandOption: true},
-      cweFile: {type: 'string', default: cweFilePath},
-      cweIdXpath: {type: 'string', default: cweIdXpath},
-      cweCategoryXpath: {type: 'string', default: categoryXpath},
-      securityStandardTag: {type: 'string', default: securityStandardTag},
-      outputFile: {type: 'string'}
-    })
-    .parseSync()
+  const argv = parseCliArgs()
+  if (!argv.sarifFile) {
+    log('Error: --sarifFile is required', LogLevel.Error)
+    process.exit(1)
+  }
   sarifFilePath = resolve(argv.sarifFile)
-  cweFilePath = resolve(argv.cweFile)
-  cweIdXpath = argv.cweIdXpath
-  categoryXpath = argv.cweCategoryXpath
-  securityStandardTag = argv.securityStandardTag
+  cweFilePath = resolve(argv.cweFile || cweFilePath)
+  cweIdXpath = argv.cweIdXpath || cweIdXpath
+  categoryXpath = argv.cweCategoryXpath || categoryXpath
+  securityStandardTag = argv.securityStandardTag || securityStandardTag
   outputFilePath = resolve(argv.outputFile || sarifFilePath)
 }
 

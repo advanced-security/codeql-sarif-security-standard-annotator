@@ -260,7 +260,7 @@ function log(message, level = LogLevel.Info) {
  */
 function normalizeCweId(cweId) {
     const parsedCweId = parseInt(cweId, 10);
-    if (Number.isNaN(parsedCweId)) {
+    if (Number.isNaN(parsedCweId) || parsedCweId < 0) {
         return null;
     }
     return String(parsedCweId);

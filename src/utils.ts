@@ -49,7 +49,7 @@ export function log(message: string, level = LogLevel.Info): void {
  */
 export function normalizeCweId(cweId: string): string | null {
   const parsedCweId = parseInt(cweId, 10)
-  if (Number.isNaN(parsedCweId)) {
+  if (Number.isNaN(parsedCweId) || parsedCweId < 0) {
     return null
   }
   return String(parsedCweId)

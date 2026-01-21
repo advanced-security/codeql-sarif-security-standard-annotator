@@ -31,5 +31,49 @@ describe('main', () => {
       const normalizedId = normalizeCweId('abc')
       expect(normalizedId).toBeNull()
     })
+
+    it('should return null for empty strings', () => {
+      // Test that empty strings return null
+      const normalizedId = normalizeCweId('')
+      expect(normalizedId).toBeNull()
+    })
+
+    it('should return null for strings with only spaces', () => {
+      // Test that strings with only spaces return null
+      const normalizedId = normalizeCweId('   ')
+      expect(normalizedId).toBeNull()
+    })
+
+    it('should handle strings with leading/trailing spaces', () => {
+      // Test that strings with spaces are parsed correctly
+      const normalizedId = normalizeCweId('  99  ')
+      expect(normalizedId).toBe('99')
+    })
+
+    it('should return null for negative numbers', () => {
+      // Test that negative numbers return null (CWE IDs should be positive)
+      const normalizedId = normalizeCweId('-99')
+      expect(normalizedId).toBeNull()
+    })
+
+    it('should handle strings with mixed alphanumeric characters (parseInt is lenient)', () => {
+      // Test that mixed alphanumeric strings are parsed leniently
+      // parseInt stops at first non-numeric character, so '99abc' becomes 99
+      // This is acceptable for our use case as malformed tags would be rare
+      const normalizedId = normalizeCweId('99abc')
+      expect(normalizedId).toBe('99')
+    })
+
+    it('should handle zero', () => {
+      // Test that zero is handled correctly
+      const normalizedId = normalizeCweId('0')
+      expect(normalizedId).toBe('0')
+    })
+
+    it('should handle zero with leading zeros', () => {
+      // Test that zero with leading zeros is handled correctly
+      const normalizedId = normalizeCweId('000')
+      expect(normalizedId).toBe('0')
+    })
   })
 })

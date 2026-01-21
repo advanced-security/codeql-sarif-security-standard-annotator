@@ -6,34 +6,36 @@ describe('main', () => {
   })
 
   describe('CWE ID normalization', () => {
+    const codeQlCweTagPrefix = 'external/cwe/cwe-'
+    
+    function normalizeCweId(tag: string): string {
+      const cweId = tag.replace(codeQlCweTagPrefix, '')
+      const normalizedId = String(parseInt(cweId, 10))
+      return normalizedId
+    }
+
     it('should handle CWE IDs with leading zeros', () => {
       // Test that cwe-099 maps to 99
-      const cweIdWithLeadingZero = 'cwe-099'
-      const cweIdPrefix = 'cwe-'
-      const extractedId = cweIdWithLeadingZero.replace(cweIdPrefix, '')
-      const normalizedId = String(parseInt(extractedId, 10))
-      
+      const normalizedId = normalizeCweId('external/cwe/cwe-099')
       expect(normalizedId).toBe('99')
     })
 
     it('should handle CWE IDs without leading zeros', () => {
       // Test that cwe-89 maps to 89
-      const cweIdNoLeadingZero = 'cwe-89'
-      const cweIdPrefix = 'cwe-'
-      const extractedId = cweIdNoLeadingZero.replace(cweIdPrefix, '')
-      const normalizedId = String(parseInt(extractedId, 10))
-      
+      const normalizedId = normalizeCweId('external/cwe/cwe-89')
       expect(normalizedId).toBe('89')
     })
 
     it('should handle CWE IDs with multiple leading zeros', () => {
       // Test that cwe-020 maps to 20
-      const cweIdWithLeadingZeros = 'cwe-020'
-      const cweIdPrefix = 'cwe-'
-      const extractedId = cweIdWithLeadingZeros.replace(cweIdPrefix, '')
-      const normalizedId = String(parseInt(extractedId, 10))
-      
+      const normalizedId = normalizeCweId('external/cwe/cwe-020')
       expect(normalizedId).toBe('20')
+    })
+
+    it('should return NaN for non-numeric CWE IDs', () => {
+      // Test that invalid CWE IDs return NaN
+      const normalizedId = normalizeCweId('external/cwe/cwe-abc')
+      expect(normalizedId).toBe('NaN')
     })
   })
 })

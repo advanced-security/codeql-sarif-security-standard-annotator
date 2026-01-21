@@ -104,11 +104,12 @@ JSONPath({
       if (tag.startsWith(codeQlCweTagPrefix)) {
         const cweId = tag.replace(codeQlCweTagPrefix, '')
         // Normalize CWE ID by converting to integer to remove leading zeros
-        const normalizedCweId = String(parseInt(cweId, 10))
+        const parsedCweId = parseInt(cweId, 10)
         // Skip if the CWE ID is not a valid number
-        if (normalizedCweId === 'NaN') {
+        if (Number.isNaN(parsedCweId)) {
           continue
         }
+        const normalizedCweId = String(parsedCweId)
         if (cweIds.includes(normalizedCweId)) {
           tags.push(securityStandardTag)
           tags.push(...cweCategories[normalizedCweId])

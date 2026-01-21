@@ -140,9 +140,11 @@ for (const cweCategoryNode of cweCategoryNodes) {
         for (const tag of tags) {
             if (tag.startsWith(codeQlCweTagPrefix)) {
                 const cweId = tag.replace(codeQlCweTagPrefix, '');
-                if (cweIds.includes(cweId)) {
+                // Normalize CWE ID by converting to integer to remove leading zeros
+                const normalizedCweId = String(parseInt(cweId, 10));
+                if (cweIds.includes(normalizedCweId)) {
                     tags.push(securityStandardTag);
-                    tags.push(...cweCategories[cweId]);
+                    tags.push(...cweCategories[normalizedCweId]);
                     return;
                 }
             }

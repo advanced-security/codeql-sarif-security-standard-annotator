@@ -5,7 +5,7 @@ import * as core from '@actions/core'
 import {DOMParser} from '@xmldom/xmldom'
 import * as xpath from 'xpath'
 import {JSONPath} from 'jsonpath-plus'
-import {LogLevel, log} from './utils'
+import {LogLevel, log, normalizeCweId} from './utils'
 
 let sarifFilePath: string
 let outputFilePath: string
@@ -104,12 +104,11 @@ JSONPath({
       if (tag.startsWith(codeQlCweTagPrefix)) {
         const cweId = tag.replace(codeQlCweTagPrefix, '')
         // Normalize CWE ID by converting to integer to remove leading zeros
-        const parsedCweId = parseInt(cweId, 10)
+        const normalizedCweId = normalizeCweId(cweId)
         // Skip if the CWE ID is not a valid number
-        if (Number.isNaN(parsedCweId)) {
+        if (normalizedCweId === null) {
           continue
         }
-        const normalizedCweId = String(parsedCweId)
         if (cweIds.includes(normalizedCweId)) {
           tags.push(securityStandardTag)
           tags.push(...cweCategories[normalizedCweId])

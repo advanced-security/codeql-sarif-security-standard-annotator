@@ -141,9 +141,9 @@ for (const cweCategoryNode of cweCategoryNodes) {
             if (tag.startsWith(codeQlCweTagPrefix)) {
                 const cweId = tag.replace(codeQlCweTagPrefix, '');
                 // Normalize CWE ID by converting to integer to remove leading zeros
-                const normalizedCweId = String(parseInt(cweId, 10));
+                const normalizedCweId = (0, utils_1.normalizeCweId)(cweId);
                 // Skip if the CWE ID is not a valid number
-                if (normalizedCweId === 'NaN') {
+                if (normalizedCweId === null) {
                     continue;
                 }
                 if (cweIds.includes(normalizedCweId)) {
@@ -209,6 +209,7 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.LogLevel = void 0;
 exports.log = log;
+exports.normalizeCweId = normalizeCweId;
 /* eslint-disable no-console */
 const process_1 = __nccwpck_require__(932);
 const core = __importStar(__nccwpck_require__(7484));
@@ -251,6 +252,18 @@ function log(message, level = LogLevel.Info) {
             }
         }
     }
+}
+/**
+ * Normalize a CWE ID by removing leading zeros
+ * @param cweId - The CWE ID string (e.g., "099", "020", "89")
+ * @returns The normalized CWE ID string (e.g., "99", "20", "89") or null if invalid
+ */
+function normalizeCweId(cweId) {
+    const parsedCweId = parseInt(cweId, 10);
+    if (Number.isNaN(parsedCweId)) {
+        return null;
+    }
+    return String(parsedCweId);
 }
 //# sourceMappingURL=utils.js.map
 

@@ -41,3 +41,16 @@ export function log(message: string, level = LogLevel.Info): void {
     }
   }
 }
+
+/**
+ * Normalize a CWE ID by removing leading zeros
+ * @param cweId - The CWE ID string (e.g., "099", "020", "89")
+ * @returns The normalized CWE ID string (e.g., "99", "20", "89") or null if invalid
+ */
+export function normalizeCweId(cweId: string): string | null {
+  const parsedCweId = parseInt(cweId, 10)
+  if (Number.isNaN(parsedCweId)) {
+    return null
+  }
+  return String(parsedCweId)
+}

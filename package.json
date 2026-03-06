@@ -3,6 +3,7 @@
   "version": "v1.1.0",
   "private": true,
   "description": "Compare a CodeQL SARIF results file to a security standard CWE list and annotate the SARIF rules with a tag to highlight results applicable to the security standard",
+  "type": "module",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -10,7 +11,7 @@
     "format-check": "prettier --check '**/*.ts'",
     "lint": "eslint src/**/*.ts",
     "package": "ncc build --source-map --license licenses.txt",
-    "test": "jest",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest",
     "release": "release-it",
     "all": "npm run build && npm run format && npm run lint && npm run package"
   },
@@ -28,9 +29,9 @@
   "author": "GitHub, Inc",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^2.0.1",
+    "@actions/core": "^3.0.0",
     "@xmldom/xmldom": "^0.8.11",
-    "jsonpath-plus": "^10.3.0",
+    "jsonpath-plus": "^10.4.0",
     "xpath": "^0.0.34"
   },
   "devDependencies": {

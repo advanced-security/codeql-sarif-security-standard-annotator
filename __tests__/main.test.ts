@@ -1,4 +1,4 @@
-import {normalizeCweId} from '../src/utils'
+import {normalizeCweId} from '../src/utils.js'
 
 describe('main', () => {
   it('placeholder test', () => {

@@ -1,8 +1,8 @@
-const typescriptEslint = require('typescript-eslint')
-const eslintPluginJest = require('eslint-plugin-jest')
-const eslintPluginGithub = require('eslint-plugin-github').default
+import typescriptEslint from 'typescript-eslint'
+import eslintPluginJest from 'eslint-plugin-jest'
+import eslintPluginGithub from 'eslint-plugin-github'
 
-module.exports = typescriptEslint.config(
+export default typescriptEslint.config(
   {
     ignores: ['dist/', 'lib/', 'node_modules/', '__tests__/reporters/', 'jest.config.js']
   },

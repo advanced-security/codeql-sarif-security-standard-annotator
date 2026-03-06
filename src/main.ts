@@ -5,7 +5,7 @@ import * as core from '@actions/core'
 import {DOMParser} from '@xmldom/xmldom'
 import * as xpath from 'xpath'
 import {JSONPath} from 'jsonpath-plus'
-import {LogLevel, log, normalizeCweId} from './utils'
+import {LogLevel, log, normalizeCweId} from './utils.js'
 
 let sarifFilePath: string
 let outputFilePath: string

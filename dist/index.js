@@ -1743,7 +1743,22 @@ Document.prototype = {
 		node.appendData(data)
 		return node;
 	},
+	/**
+	 * Returns a new CDATASection node whose data is `data`.
+	 *
+	 * __This implementation differs from the specification:__
+	 * - calling this method on an HTML document does not throw `NotSupportedError`.
+	 *
+	 * @param {string} data
+	 * @returns {CDATASection}
+	 * @throws DOMException with code `INVALID_CHARACTER_ERR` if `data` contains `"]]>"`.
+	 * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/createCDATASection
+	 * @see https://dom.spec.whatwg.org/#dom-document-createcdatasection
+	 */
 	createCDATASection :	function(data){
+		if (data.indexOf(']]>') !== -1) {
+			throw new DOMException(INVALID_CHARACTER_ERR, 'data contains "]]>"');
+		}
 		var node = new CDATASection();
 		node.ownerDocument = this;
 		node.appendData(data)
@@ -2012,6 +2027,20 @@ function ProcessingInstruction() {
 ProcessingInstruction.prototype.nodeType = PROCESSING_INSTRUCTION_NODE;
 _extends(ProcessingInstruction,Node);
 function XMLSerializer(){}
+/**
+ * Returns the result of serializing `node` to XML.
+ *
+ * __This implementation differs from the specification:__
+ * - CDATASection nodes whose data contains `]]>` are serialized by splitting the section
+ *   at each `]]>` occurrence (following W3C DOM Level 3 Core `split-cdata-sections`
+ *   default behaviour). A configurable option is not yet implemented.
+ *
+ * @param {Node} node
+ * @param {boolean} [isHtml]
+ * @param {function} [nodeFilter]
+ * @returns {string}
+ * @see https://html.spec.whatwg.org/#dom-xmlserializer-serializetostring
+ */
 XMLSerializer.prototype.serializeToString = function(node,isHtml,nodeFilter){
 	return nodeSerializeToString.call(node,isHtml,nodeFilter);
 }
@@ -2230,7 +2259,7 @@ function serializeToString(node,buf,isHTML,nodeFilter,visibleNamespaces){
 			.replace(/[<&>]/g,_xmlEncoder)
 		);
 	case CDATA_SECTION_NODE:
-		return buf.push( '<![CDATA[',node.data,']]>');
+		return buf.push('<![CDATA[', node.data.replace(/]]>/g, ']]]]><![CDATA[>'), ']]>');
 	case COMMENT_NODE:
 		return buf.push( "<!--",node.data,"-->");
 	case DOCUMENT_TYPE_NODE:
@@ -5214,7 +5243,7 @@ function parseDCC(source,start,domBuilder,errorHandler){//sure start with '<!'
 function parseInstruction(source,start,domBuilder){
 	var end = source.indexOf('?>',start);
 	if(end){
-		var match = source.substring(start,end).match(/^<\?(\S*)\s*([\s\S]*?)\s*$/);
+		var match = source.substring(start,end).match(/^<\?(\S*)\s*([\s\S]*?)$/);
 		if(match){
 			var len = match[0].length;
 			domBuilder.processingInstruction(match[1], match[2]) ;

@@ -77,7 +77,7 @@ try {
 
 // Load security standard CWE XML file
 try {
-  cweXml = new DOMParser().parseFromString(readFileSync(cweFilePath, 'utf8'))
+  cweXml = new DOMParser().parseFromString(readFileSync(cweFilePath, 'utf8'), 'text/xml') as unknown as Document
 } catch (err) {
   log(`Unable to load CWE file`, LogLevel.Error)
   core.setFailed(err as Error)

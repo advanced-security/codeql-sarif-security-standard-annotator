@@ -29,8 +29,8 @@
   "author": "GitHub, Inc",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^3.0.0",
-    "@xmldom/xmldom": "^0.8.13",
+    "@actions/core": "^3.0.1",
+    "@xmldom/xmldom": "^0.9.10",
     "jsonpath-plus": "^10.4.0",
     "xpath": "^0.0.34"
   },

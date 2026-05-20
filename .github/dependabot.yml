@@ -13,11 +13,11 @@ updates:
       prefix-development: chore
     labels:
       - "dependencies"
+    cooldown:
+      default-days: 3
     groups:
-      production-dependencies:
-        dependency-type: "production"
-      development-dependencies:
-        dependency-type: "development"
+      actions:
+        patterns: ["*"]
 
   # ---------- NPM / JS ----------
   - package-ecosystem: "npm"
@@ -32,6 +32,8 @@ updates:
       prefix-development: chore
     labels:
       - "dependencies"
+    cooldown:
+      default-days: 3
     groups:
       production-dependencies:
         dependency-type: "production"

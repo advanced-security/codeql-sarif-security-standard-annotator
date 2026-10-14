@@ -10,7 +10,7 @@ import {LogLevel, log, normalizeCweId} from './utils.js'
 let sarifFilePath: string
 let outputFilePath: string
 let sarifResults: object
-let cweXml: Document
+let cweXml: ReturnType<DOMParser['parseFromString']>
 
 let cweFilePath = resolve(dirname(process.argv[1]), '..//security-standards/owasp-top10-2021.xml')
 const cweFileXmlNs = {cwe: 'http://cwe.mitre.org/cwe-6'}
@@ -77,18 +77,18 @@ try {
 
 // Load security standard CWE XML file
 try {
-  cweXml = new DOMParser().parseFromString(readFileSync(cweFilePath, 'utf8'))
+  cweXml = new DOMParser().parseFromString(readFileSync(cweFilePath, 'utf8'), 'application/xml')
 } catch (err) {
   log(`Unable to load CWE file`, LogLevel.Error)
   core.setFailed(err as Error)
   throw err
 }
 const select = xpath.useNamespaces(cweFileXmlNs)
-const cweIds = (select(cweIdXpath, cweXml) as Attr[]).map(attribute => attribute.value)
-const cweCategoryNodes = select(categoryXpath, cweXml) as Node[]
+const cweIds = (select(cweIdXpath, cweXml as unknown as Node) as unknown as Attr[]).map(attribute => attribute.value)
+const cweCategoryNodes = select(categoryXpath, cweXml as unknown as Node) as unknown as Node[]
 const cweCategories: {[k: string]: string[]} = {}
 for (const cweCategoryNode of cweCategoryNodes) {
-  const memberCweIds = (select(categoryMembersXpath, cweCategoryNode) as Attr[]).map(attr => attr.value)
+  const memberCweIds = (select(categoryMembersXpath, cweCategoryNode) as unknown as Attr[]).map(attr => attr.value)
   const categoryName = (select(categoryNameAttr, cweCategoryNode, true) as Attr).value.replace(categoryNameReplaceSearch, '')
   for (const cweId of memberCweIds) {
     cweCategories[cweId] = [...(cweCategories[cweId] || []), categoryName]

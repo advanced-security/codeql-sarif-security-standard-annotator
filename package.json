@@ -31,8 +31,8 @@
   "dependencies": {
     "@actions/core": "^3.0.1",
     "@xmldom/xmldom": "^0.9.12",
-    "jsonpath-plus": "^11.1.0",
-    "xpath": "^0.0.34"
+    "jsonpath-plus": "^11.2.0",
+    "xpath": "^0.0.35"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
